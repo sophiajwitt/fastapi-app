@@ -13,7 +13,7 @@ class Item(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Just redeployed :O"}
 
 
 @app.get("/items/{item_id}")
