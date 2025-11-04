@@ -137,30 +137,63 @@ The Next.js frontend uses:
 - Tailwind CSS for styling
 - React hooks for state management
 
-## Building for Production
+## Deployment
 
-### Backend
+### Environment Variables
+
+#### Backend (FastAPI)
+No environment variables required for basic deployment. The backend runs on the port specified by the platform (default 8000).
+
+#### Frontend (Next.js)
+Required environment variable in your deployment UI:
+
+```bash
+NEXT_PUBLIC_API_URL=http://fastapi-app-web.default.svc.cluster.local:8000
+```
+
+**Note:** Replace with your actual backend service URL. For Kubernetes deployments, use the internal cluster service URL format: `http://<service-name>.<namespace>.svc.cluster.local:<port>`
+
+### Building for Production
+
+#### Backend
 
 For production deployment, use a production ASGI server:
 ```bash
-uv run uvicorn main:app --host 0.0.0.0 --port 8001
+uv run uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 Or build and deploy the virtual environment:
 ```bash
 uv sync --frozen
 source .venv/bin/activate
-uvicorn main:app --host 0.0.0.0 --port 8001
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### Frontend
+#### Frontend
 
-Build the Next.js application:
+The frontend uses [.env.production](frontend/.env.production) automatically when building for production:
+
 ```bash
 cd frontend
 npm run build
 npm start
 ```
+
+### Porter Deployment
+
+This project includes Porter deployment configuration. When deploying:
+
+1. **Backend Service**: Deploy first, note the service URL
+2. **Frontend Service**: Set `NEXT_PUBLIC_API_URL` environment variable to the backend service URL
+3. Both services will communicate within the Kubernetes cluster
+
+### CORS Configuration
+
+The backend ([main.py](main.py:7-17)) is configured to accept requests from:
+- `http://localhost:3000` (local development)
+- All origins via `*` (for Kubernetes internal communication)
+
+For production, consider restricting CORS to specific frontend domains for better security.
 
 ## License
 
