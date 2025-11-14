@@ -2,7 +2,7 @@
     push:
         branches:
             - main
-name: Deploy to fastapi-app
+name: Deploy to frontend
 jobs:
     porter-deploy:
         runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
               timeout-minutes: 30
               run: porter apply
               env:
-                PORTER_APP_NAME: fastapi-app
+                PORTER_APP_NAME: frontend
                 PORTER_CLUSTER: "1"
                 PORTER_DEPLOYMENT_TARGET_ID: e9ffea2a-6c9a-4621-8c7b-f6aa979ddc57
                 PORTER_HOST: https://witt.withporter.run
